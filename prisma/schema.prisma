@@ -10,12 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Fee {
-  id      String   @id @default(uuid())
-  min     Float
-  max     Float
-  average Float
-  median  Float
-  block   String
-  date    DateTime
+model User {
+  id        String   @id @default(uuid())
+  firstname String
+  lastname  String
+  phone     String
+  updatedAt DateTime @updatedAt
+  createdAt DateTime
 }

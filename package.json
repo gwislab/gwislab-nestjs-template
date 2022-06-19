@@ -26,12 +26,16 @@
     "postinstall": "yarn prisma db push"
   },
   "dependencies": {
+    "@nestjs/apollo": "^10.0.16",
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
+    "@nestjs/graphql": "^10.0.16",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/swagger": "^5.2.1",
     "@prisma/client": "^3.15.2",
+    "apollo-server-express": "^3.9.0",
     "axios": "^0.27.2",
+    "graphql": "^16.5.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
