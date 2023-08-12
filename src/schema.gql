@@ -2,6 +2,186 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateEventInput {
+  description: String
+  details: JSONObject
+  imageUrl: String
+  title: String!
+}
+
+input CreateEventLocationInput {
+  certificates: String
+  date: DateTime!
+  duration: String
+  eventId: String!
+  location: String
+  other: JSONObject
+  registrationPrice: String
+  sponsor: String
+  trainingFee: String
+  venue: String
+}
+
+input CreateEventUserInput {
+  email: String
+  eventId: String!
+  name: String
+  organization: String
+  other: JSONObject
+  profession: String
+  tel: String
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Event {
+  createdAt: DateTime!
+  description: String
+  details: JSONObject
+  eventLocation: [EventLocation!]
+  eventUser: [EventUser!]
+  id: String!
+  imageUrl: String
+  title: String!
+  updatedAt: DateTime!
+}
+
+type EventLocation {
+  certificates: String
+  createdAt: DateTime!
+  date: DateTime!
+  duration: String
+  event: Event
+  eventId: String!
+  id: String!
+  location: String
+  other: JSONObject
+  registrationPrice: String
+  sponsor: String
+  trainingFee: String
+  updatedAt: DateTime!
+  venue: String
+}
+
+type EventUser {
+  createdAt: DateTime!
+  email: String
+  event: Event
+  eventId: String!
+  id: String!
+  name: String
+  organization: String
+  other: JSONObject
+  profession: String
+  tel: String
+  updatedAt: DateTime!
+}
+
+input FilterEventInput {
+  description: String
+  details: JSONObject
+  id: String
+  imageUrl: String
+  title: String
+}
+
+input FilterEventLocationInput {
+  certificates: String
+  date: DateTime
+  duration: String
+  eventId: String
+  id: String
+  location: String
+  other: JSONObject
+  registrationPrice: String
+  sponsor: String
+  trainingFee: String
+  venue: String
+}
+
+input FilterEventUserInput {
+  email: String
+  eventId: String
+  id: String
+  name: String
+  organization: String
+  other: JSONObject
+  profession: String
+  tel: String
+}
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  createEvent(createEventInput: CreateEventInput!): Event!
+  createEventLocation(createEventLocationInput: CreateEventLocationInput!): EventLocation!
+  createEventUser(createEventUserInput: CreateEventUserInput!): EventUser!
+  loginUser(loginUserInput: LoginUserInput!): User!
+  removeEvent(id: String!): Event!
+  removeEventLocation(id: String!): EventLocation!
+  signupUser(signupUserInput: SignUpUserInput!): User!
+  updateEvent(updateEventInput: UpdateEventInput!): Event!
+  updateEventLocation(updateEventLocationInput: UpdateEventLocationInput!): EventLocation!
+}
+
 type Query {
-  hello: String!
+  getAllEventLocations(filterEventLocationInput: FilterEventLocationInput): [EventLocation!]!
+  getAllEventUsers(filterEventInput: FilterEventUserInput): [EventUser!]!
+  getAllEvents(filterEventInput: FilterEventInput): [Event!]!
+  getEvent(filterEventInput: FilterEventInput): Event!
+  getEventLocation(filterEventLocationInput: FilterEventLocationInput): EventLocation!
+  getEventUser(filterEventUserInput: FilterEventUserInput): EventUser!
+  me: User!
+}
+
+input SignUpUserInput {
+  cpassword: String!
+  email: String!
+  firstName: String!
+  isTermsAgree: Boolean!
+  lastName: String!
+  password: String!
+}
+
+input UpdateEventInput {
+  description: String
+  details: JSONObject
+  id: String!
+  imageUrl: String
+  title: String
+}
+
+input UpdateEventLocationInput {
+  certificates: String
+  date: DateTime
+  duration: String
+  eventId: String
+  id: String!
+  location: String
+  other: JSONObject
+  registrationPrice: String
+  sponsor: String
+  trainingFee: String
+  venue: String
+}
+
+type User {
+  email: String!
+  expiresIn: String
+  firstName: String!
+  id: String!
+  isTermsAgree: Boolean!
+  lastName: String!
+  token: String
 }

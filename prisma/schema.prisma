@@ -11,10 +11,55 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  firstname String
-  lastname  String
-  phone     String
-  updatedAt DateTime @updatedAt
-  createdAt DateTime
+  id           String   @id @default(uuid())
+  email        String   @unique
+  firstName    String   @map("first_name")
+  lastName     String   @map("last_name")
+  password     String
+  isTermsAgree Boolean  @default(false) @map("is_terms_agree")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+}
+
+model Event {
+  id            String          @id @default(uuid())
+  title         String          @unique
+  description   String?
+  imageUrl      String?
+  details       Json?
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+  eventUser     EventUser[]
+  eventLocation EventLocation[]
+}
+
+model EventUser {
+  id           String   @id @default(uuid())
+  name         String?
+  tel          String?
+  email        String?
+  organization String?
+  profession   String?
+  other        Json?
+  eventId      String
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  event        Event    @relation(fields: [eventId], references: [id])
+}
+
+model EventLocation {
+  id                String   @id @default(uuid())
+  date              DateTime
+  location          String?
+  venue             String?
+  trainingFee       String?
+  sponsor           String?
+  duration          String?
+  certificates      String?
+  registrationPrice String?
+  other             Json?
+  eventId           String
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  event             Event    @relation(fields: [eventId], references: [id])
 }

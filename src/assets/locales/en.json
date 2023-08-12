@@ -1,0 +1,26 @@
+{
+  "validation": {
+    "telAndEmail": "Email and Tel cannot be both empty",
+    "requiredField": "One or more fields are required",
+    "passwordMin": "Minimum password length is 8",
+    "passwordMatch": "Passwords does not match",
+    "phoneNumberMin": "Minimum phone number length is 8",
+    "checkTerms": "Please make sure to accept our terms of conditions",
+    "invalidEmail": "The Email Provided is invalid",
+    "tel": "Tel is not a valid phone number"
+  },
+  "error": {
+    "noUserFound": "No User Found",
+    "emailExist": "Email already exist, please try again.",
+    "telExist": "Tel already exist, please try again.",
+    "passwordInCorrect": "Password is not correct",
+    "userNotConfirmed": "User is not confirmed, Please check your email or phone number for confirmation code",
+    "phoneOrEmail": "Invalid phone number or email provided"
+  },
+  "success": {
+    "registrationCodeSent": "A Code was sent to your email or phone number, Please copy to confirm your email or phone number"
+  },
+  "info": {
+    "confirmationCodeSent": "Your confirmation code is {{code}} and your confirmation link is {{link}}"
+  }
+}
