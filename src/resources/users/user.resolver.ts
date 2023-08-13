@@ -14,8 +14,9 @@ import { AppLogger } from '../../services/logger.service';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { UseGuards, UsePipes } from '@nestjs/common';
 import AppContext from 'src/interfaces/context.interface';
-import { ValidateSignupArgs } from '../../pipes/inputValidation.pipe';
+import { ValidateSignupArgs } from '../../pipes/input.validation.pipe';
 import { AppErrors } from 'src/services/error.service';
+import { I18n, I18nContext } from 'nestjs-i18n';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -29,7 +30,7 @@ export class UserResolver {
   @Mutation(() => User)
   signupUser(
     @Args('signupUserInput') signupUserInput: SignUpUserInput,
-    @Context() { i18n }: AppContext,
+    @I18n() i18n: I18nContext,
   ) {
     try {
       return this.userService.signup(signupUserInput, i18n);
@@ -41,7 +42,7 @@ export class UserResolver {
   @Mutation(() => User)
   loginUser(
     @Args('loginUserInput') loginUserInput: LoginUserInput,
-    @Context() { i18n }: AppContext,
+    @I18n() i18n: I18nContext,
   ) {
     try {
       return this.userService.login(loginUserInput, i18n);
@@ -52,7 +53,7 @@ export class UserResolver {
 
   @UseGuards(AuthGuard)
   @Query(() => User)
-  me(@Context() { req, i18n }: AppContext) {
+  me(@Context() { req }: AppContext, @I18n() i18n: I18nContext) {
     try {
       const { user } = req;
       return this.userService.getMe(user.id, i18n);

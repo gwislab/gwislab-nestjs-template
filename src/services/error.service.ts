@@ -8,25 +8,33 @@ import {
   RequestTimeoutException,
   UnauthorizedException,
 } from '@nestjs/common';
-import * as i18n from 'i18next';
+import { I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class AppErrors {
+  constructor(private readonly i18n: I18nService) {}
+
   handler(
     error: any,
     statusCode: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
   ) {
     switch (statusCode) {
       case HttpStatus.BAD_REQUEST:
-        throw new BadRequestException(i18n.t('badRequest'), error);
+        throw new BadRequestException(this.i18n.t('errors.badRequest'), error);
       case HttpStatus.NOT_FOUND:
-        throw new NotFoundException(i18n.t('404'), error);
+        throw new NotFoundException(this.i18n.t('errors.404'), error);
       case HttpStatus.FORBIDDEN:
-        throw new ForbiddenException(i18n.t('forbidden'), error);
+        throw new ForbiddenException(this.i18n.t('errors.forbidden'), error);
       case HttpStatus.UNAUTHORIZED:
-        throw new UnauthorizedException(i18n.t('unauthorized'), error);
+        throw new UnauthorizedException(
+          this.i18n.t('errors.unauthorized'),
+          error,
+        );
       case HttpStatus.TOO_MANY_REQUESTS:
-        throw new RequestTimeoutException(i18n.t('tooManyRequest'), error);
+        throw new RequestTimeoutException(
+          this.i18n.t('errors.tooManyRequest'),
+          error,
+        );
 
       default: {
         if (
@@ -40,7 +48,7 @@ export class AppErrors {
         }
         throw new InternalServerErrorException(
           error,
-          i18n.t('somethingWentWrong'),
+          this.i18n.t('errors.somethingWentWrong'),
         );
       }
     }

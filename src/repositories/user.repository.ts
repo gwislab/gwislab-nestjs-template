@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AppLogger } from '../services/logger.service';
 import { User } from '@prisma/client';
-import prisma from '../prisma';
+import prisma from '../lib/prisma';
 import { FilterUserArgs } from '../interfaces';
 import { CreateUserArgs } from 'src/interfaces/create-args.interface';
 import { AppErrors } from 'src/services/error.service';

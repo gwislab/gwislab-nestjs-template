@@ -9,12 +9,13 @@ import { Request } from 'express';
 import config from '../config/config';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AppErrors } from '../services/error.service';
-import * as i18n from 'i18next';
+import { I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
+    private readonly i18n: I18nService,
     private readonly error: AppErrors,
   ) {}
 
@@ -25,7 +26,7 @@ export class AuthGuard implements CanActivate {
 
     if (!token) {
       throw this.error.handler(
-        i18n.t('missingAuthHeader'),
+        this.i18n.t('errors.missingAuthHeader'),
         HttpStatus.UNAUTHORIZED,
       );
     }
@@ -37,7 +38,7 @@ export class AuthGuard implements CanActivate {
 
       if (!payload) {
         throw this.error.handler(
-          i18n.t('userAlreadyExit'),
+          this.i18n.t('errors.userAlreadyExit'),
           HttpStatus.UNAUTHORIZED,
         );
       }
@@ -45,7 +46,7 @@ export class AuthGuard implements CanActivate {
       req.token = token;
     } catch {
       throw this.error.handler(
-        i18n.t('sessionExpired'),
+        this.i18n.t('errors.sessionExpired'),
         HttpStatus.UNAUTHORIZED,
       );
     }

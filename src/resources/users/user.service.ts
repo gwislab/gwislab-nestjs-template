@@ -4,11 +4,11 @@ import { SignUpUserInput, LoginUserInput } from './dto/user-auth.input';
 import { User } from './entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from '../../repositories/user.repository';
-import { hashText, isHashMatch } from '../../utils/functions';
 import { AppErrors } from '../../services/error.service';
-import { IGetJwtPayload, IJwtPayload, IRequest, Ii18n } from 'src/interfaces';
-import { getSecondsLeft } from 'src/utils/moment';
+import { IGetJwtPayload, IJwtPayload, IRequest } from 'src/interfaces';
 import * as moment from 'moment';
+import { I18nContext } from 'nestjs-i18n';
+import { Utils } from 'src/services/utils.service';
 
 @Injectable()
 export class UserService {
@@ -17,11 +17,12 @@ export class UserService {
     private readonly error: AppErrors,
     private readonly jwtService: JwtService,
     private readonly userRepository: UserRepository,
+    private readonly utils: Utils,
   ) {
     this.logger.setContext(UserService.name);
   }
 
-  signup = async (data: SignUpUserInput, i18n: Ii18n): Promise<User> => {
+  signup = async (data: SignUpUserInput, i18n: I18nContext): Promise<User> => {
     try {
       const userExist = await this.userRepository.getUserByFilter({
         email: data.email,
@@ -29,7 +30,7 @@ export class UserService {
 
       if (userExist) {
         throw this.error.handler(
-          i18n.t('userAlreadyExit'),
+          i18n.t('errors.userAlreadyExit'),
           HttpStatus.BAD_REQUEST,
         );
       }
@@ -38,7 +39,7 @@ export class UserService {
         userExist ||
         (await this.userRepository.saveUserDetails({
           ...data,
-          password: await hashText(data.password),
+          password: await this.utils.hashText(data.password),
         } as any));
 
       const payload = { userId: user.id, email: user.email };
@@ -53,21 +54,27 @@ export class UserService {
     }
   };
 
-  login = async (data: LoginUserInput, i18n: Ii18n): Promise<User> => {
+  login = async (data: LoginUserInput, i18n: I18nContext): Promise<User> => {
     try {
       const user = await this.userRepository.getUserByFilter({
         email: data.email,
       });
 
       if (!user) {
-        throw this.error.handler(i18n.t('userNotFound'), HttpStatus.NOT_FOUND);
+        throw this.error.handler(
+          i18n.t('errors.userNotFound'),
+          HttpStatus.NOT_FOUND,
+        );
       }
 
       if (
-        !(await isHashMatch({ password: data.password, hash: user.password }))
+        !(await this.utils.isHashMatch({
+          password: data.password,
+          hash: user.password,
+        }))
       ) {
         throw this.error.handler(
-          i18n.t('invalidPassword'),
+          i18n.t('errors.invalidPassword'),
           HttpStatus.BAD_REQUEST,
         );
       }
@@ -84,14 +91,17 @@ export class UserService {
     }
   };
 
-  getMe = async (userId: string, i18n: Ii18n): Promise<User> => {
+  getMe = async (userId: string, i18n: I18nContext): Promise<User> => {
     try {
       const user = await this.userRepository.getUserByFilter({
         id: userId,
       });
 
       if (!user) {
-        throw this.error.handler(i18n.t('userNotFound'), HttpStatus.NOT_FOUND);
+        throw this.error.handler(
+          i18n.t('errors.userNotFound'),
+          HttpStatus.NOT_FOUND,
+        );
       }
 
       return user;
@@ -107,7 +117,7 @@ export class UserService {
       if (!token) return;
 
       const res = this.jwtService.decode(token) as IJwtPayload;
-      const secondsLeft = getSecondsLeft(moment.unix(res.exp));
+      const secondsLeft = this.utils.getSecondsLeft(moment.unix(res.exp));
       const expiresIn = secondsLeft + 's';
       if (secondsLeft <= 180) {
         return { token: this.jwtService.sign(req.user), expiresIn };

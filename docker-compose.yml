@@ -1,0 +1,46 @@
+version: "3.8" # optional since v1.27.0
+services:
+  # postgres:
+  #   image: "postgres:latest"
+  #   networks:
+  #     - webnet
+  #   restart: always
+  #   environment:
+  #     POSTGRES_PASSWORD: "${DB_PASSWORD}"
+  #     POSTGRES_USER: "${DB_USER}"
+  #     POSTGRES_DB: "${DB_NAME}"
+  #   volumes:
+  #     - ./pgdata:/var/lib/postgresql/data
+  #   ports:
+  #     - "5433:5432"
+
+  redis:
+    image: docker.io/bitnami/redis:6.2
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - '6379:6379'
+    volumes:
+      - 'redis_data:/bitnami/redis/data'
+    # depends_on:
+    #   - postgres
+
+volumes:
+  redis_data:
+    driver: local
+
+  # questmey:
+  #   image: questmey-backend
+  #   networks:
+  #     - webnet
+  #   ports:
+  #     - '8081:8081'
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     DB_HOST: postgres
+
+# networks:
+#   webnet:

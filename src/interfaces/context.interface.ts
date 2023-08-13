@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
-import { i18n } from 'i18next';
 import { User } from '../resources/users/entities/user.entity';
 
 interface RequestExt {
@@ -9,7 +8,6 @@ interface RequestExt {
 }
 
 export type IRequest = RequestExt & Request;
-export type Ii18n = Omit<i18n, 't'> & { t: (msg: string, _?: any) => string };
 
 export default interface AppContext {
   jwt?: string;
@@ -17,7 +15,6 @@ export default interface AppContext {
   req: IRequest;
   res: Response;
   locale: 'en' | 'fr';
-  i18n: Ii18n;
 }
 
 export interface IJwtPayload {

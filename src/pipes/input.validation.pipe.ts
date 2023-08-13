@@ -1,20 +1,26 @@
 import { PipeTransform, Injectable, HttpStatus } from '@nestjs/common';
 import { SignUpUserInput } from '../resources/users/dto/user-auth.input';
 import { AppErrors } from '../services/error.service';
-import * as i18n from 'i18next';
+import { I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class ValidateSignupArgs implements PipeTransform {
-  transform(value: SignUpUserInput) {
-    const error = new AppErrors();
+  constructor(
+    private readonly i18n?: I18nService,
+    private readonly error?: AppErrors,
+  ) {}
 
+  transform(value: SignUpUserInput) {
     if (value.cpassword !== value.password) {
-      throw error.handler(i18n.t('passwordNotMatch'), HttpStatus.BAD_REQUEST);
+      throw this.error.handler(
+        this.i18n.t('errors.passwordNotMatch'),
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     if (!value.isTermsAgree) {
-      throw error.handler(
-        i18n.t('termsAndConditionRequired'),
+      throw this.error.handler(
+        this.i18n.t('errors.termsAndConditionRequired'),
         HttpStatus.BAD_REQUEST,
       );
     }

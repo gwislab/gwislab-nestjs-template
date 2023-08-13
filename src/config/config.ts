@@ -11,6 +11,7 @@ const config = {
   port: process.env.PORT,
   jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN,
+  defaultLanguage: 'en',
 };
 
 const missingConfig = Object.keys(config).filter(
