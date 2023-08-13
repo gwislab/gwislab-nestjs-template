@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
 import { User } from '../resources/users/entities/user.entity';
-
+import { PubSub } from 'graphql-subscriptions';
 interface RequestExt {
   token: string;
   user: User;
@@ -14,6 +14,7 @@ export default interface AppContext {
   prisma: PrismaClient;
   req: IRequest;
   res: Response;
+  pubsub: PubSub;
   locale: 'en' | 'fr';
 }
 

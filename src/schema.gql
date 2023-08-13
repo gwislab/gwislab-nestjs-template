@@ -14,6 +14,7 @@ type Mutation {
 
 type Query {
   me: User!
+  publishChat: String!
 }
 
 input SignUpUserInput {
@@ -23,6 +24,10 @@ input SignUpUserInput {
   isTermsAgree: Boolean!
   lastName: String!
   password: String!
+}
+
+type Subscription {
+  addChat: String!
 }
 
 type User {

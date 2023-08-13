@@ -6,6 +6,7 @@ import {
   ResolveField,
   Context,
   Parent,
+  Subscription,
 } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
@@ -17,6 +18,7 @@ import AppContext from 'src/interfaces/context.interface';
 import { ValidateSignupArgs } from '../../pipes/input.validation.pipe';
 import { AppErrors } from 'src/services/error.service';
 import { I18n, I18nContext } from 'nestjs-i18n';
+import { PubSub } from 'graphql-subscriptions';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -80,5 +82,18 @@ export class UserResolver {
     } catch (error) {
       throw this.error.handler(error);
     }
+  }
+
+  @Subscription(() => String)
+  addChat(@Context('pubsub') pubSub: PubSub) {
+    return pubSub.asyncIterator('addChat');
+  }
+
+  @Query(() => String)
+  async publishChat(@Context('pubsub') pubSub: PubSub) {
+    await pubSub.publish('addChat', {
+      addChat: 'chat was added',
+    });
+    return 'done';
   }
 }

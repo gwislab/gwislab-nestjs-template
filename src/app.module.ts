@@ -15,6 +15,7 @@ import { GraphQLError } from 'graphql';
 import { ErrorSearchValues } from './config/constants';
 import { HeaderResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import { GraphQlError } from './services/graphql-error.service';
+import { PubSub } from 'graphql-subscriptions';
 
 const langOptions = [
   'gwislab-user-locale',
@@ -25,6 +26,8 @@ const langOptions = [
 
 const logger = new AppLogger();
 const gErrors = new GraphQlError();
+const pubsub = new PubSub();
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -47,6 +50,9 @@ const gErrors = new GraphQlError();
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
+      subscriptions: {
+        'graphql-ws': true,
+      },
       debug: config.isDevEnv,
       playground: false,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
@@ -54,9 +60,12 @@ const gErrors = new GraphQlError();
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
       context: (ctx: any) => {
         logger.setContext('AppModule:context');
-        const lang = langOptions.find((option) => ctx.req.headers[option]);
-        const locale = ctx.req.headers[lang];
+        let locale = config.defaultLanguage;
 
+        if (ctx?.req?.headers) {
+          const lang = langOptions.find((option) => ctx.req?.headers?.[option]);
+          locale = ctx.req.headers[lang];
+        }
         // if (!locale) {
         //   throw new Error('Missing Header: `gwislab-user-locale`');
         // }
@@ -65,6 +74,7 @@ const gErrors = new GraphQlError();
           ...ctx,
           locale,
           prisma,
+          pubsub,
         };
       },
       formatError: (error: GraphQLError): any => {
