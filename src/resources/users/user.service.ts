@@ -6,7 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from '../../repositories/user.repository';
 import { hashText, isHashMatch } from '../../utils/functions';
 import { AppErrors } from '../../services/error.service';
-import { IGetJwtPayload, IJwtPayload, IRequest } from 'src/interfaces';
+import { IGetJwtPayload, IJwtPayload, IRequest, Ii18n } from 'src/interfaces';
 import { getSecondsLeft } from 'src/utils/moment';
 import * as moment from 'moment';
 
@@ -21,14 +21,17 @@ export class UserService {
     this.logger.setContext(UserService.name);
   }
 
-  signup = async (data: SignUpUserInput): Promise<User> => {
+  signup = async (data: SignUpUserInput, i18n: Ii18n): Promise<User> => {
     try {
       const userExist = await this.userRepository.getUserByFilter({
         email: data.email,
       });
 
       if (userExist) {
-        throw this.error.handler('User already exit', HttpStatus.BAD_REQUEST);
+        throw this.error.handler(
+          i18n.t('userAlreadyExit'),
+          HttpStatus.BAD_REQUEST,
+        );
       }
 
       const user =
@@ -36,7 +39,7 @@ export class UserService {
         (await this.userRepository.saveUserDetails({
           ...data,
           password: await hashText(data.password),
-        }));
+        } as any));
 
       const payload = { userId: user.id, email: user.email };
       const token = await this.jwtService.signAsync(payload);
@@ -50,20 +53,23 @@ export class UserService {
     }
   };
 
-  login = async (data: LoginUserInput): Promise<User> => {
+  login = async (data: LoginUserInput, i18n: Ii18n): Promise<User> => {
     try {
       const user = await this.userRepository.getUserByFilter({
         email: data.email,
       });
 
       if (!user) {
-        throw this.error.handler('User not found', HttpStatus.NOT_FOUND);
+        throw this.error.handler(i18n.t('userNotFound'), HttpStatus.NOT_FOUND);
       }
 
       if (
         !(await isHashMatch({ password: data.password, hash: user.password }))
       ) {
-        throw this.error.handler('Incorrect password', HttpStatus.BAD_REQUEST);
+        throw this.error.handler(
+          i18n.t('invalidPassword'),
+          HttpStatus.BAD_REQUEST,
+        );
       }
 
       const payload = { userId: user.id, email: user.email };
@@ -78,14 +84,14 @@ export class UserService {
     }
   };
 
-  getMe = async (userId: string): Promise<User> => {
+  getMe = async (userId: string, i18n: Ii18n): Promise<User> => {
     try {
       const user = await this.userRepository.getUserByFilter({
         id: userId,
       });
 
       if (!user) {
-        throw this.error.handler('User not found', HttpStatus.NOT_FOUND);
+        throw this.error.handler(i18n.t('userNotFound'), HttpStatus.NOT_FOUND);
       }
 
       return user;

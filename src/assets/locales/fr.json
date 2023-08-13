@@ -1,18 +1,5 @@
 {
-  "validation": {
-    "telAndEmail": "Email et Tel ne peuvent pas être tous deux vides",
-    "requiredField": "Un ou plusieurs champs sont obligatoires",
-    "passwordMin": "La longueur minimale du mot de passe est de 8",
-    "passwordMatch": "Les mots de passe ne correspondent pas",
-    "phoneNumberMin": "La longueur minimale du numéro de téléphone est de 8",
-    "checkTerms": "Veuillez vous assurer que vous acceptez nos conditions générales",
-    "invalidEmail": "L'email fourni n'est pas valide"
-  },
   "error": {
-    "noUserFound": "Aucun utilisateur trouvé",
-    "emailExist": "Email already exist, please try again.",
-    "telExist": "Tel existe déjà, veuillez réessayer.",
-    "passwordInCorrect": "Password is incorrect",
-    "userNotConfirmed": "L'utilisateur n'est pas confirmé, veuillez vérifier votre email ou votre numéro de téléphone pour le code de confirmation."
+    "noUserFound": "Aucun utilisateur trouvé"
   }
 }

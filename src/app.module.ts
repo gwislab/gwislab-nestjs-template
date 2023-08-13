@@ -8,11 +8,10 @@ import { join } from 'path';
 import { AppLogger } from './services/logger.service';
 import * as i18n from 'i18next';
 import prisma from './prisma';
-import { UserModule } from './resources/users/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { RepositoryModule } from './repositories/index.module';
 import { ServiceModule } from './services/index.module';
-import { EventsModule } from './resources/events/events.module';
+import { ResourceModule } from './resources/index.module';
 
 @Module({
   imports: [
@@ -28,10 +27,10 @@ import { EventsModule } from './resources/events/events.module';
         const logger = new AppLogger();
         logger.setContext('AppModule');
 
-        const locale = ctx.req.headers['paraklete-user-locale'];
+        const locale = ctx.req.headers['gwislab-user-locale'];
 
         if (!locale) {
-          throw new Error('Missing Header: `paraklete-user-locale`');
+          throw new Error('Missing Header: `gwislab-user-locale`');
         }
 
         i18n.changeLanguage(locale, (error) => {
@@ -54,8 +53,7 @@ import { EventsModule } from './resources/events/events.module';
       secret: config.jwtSecret,
       signOptions: { expiresIn: config.jwtExpiresIn },
     }),
-    EventsModule,
-    UserModule,
+    ResourceModule,
     RepositoryModule,
     ServiceModule,
   ],

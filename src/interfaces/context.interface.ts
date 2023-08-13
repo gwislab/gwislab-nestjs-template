@@ -9,6 +9,7 @@ interface RequestExt {
 }
 
 export type IRequest = RequestExt & Request;
+export type Ii18n = Omit<i18n, 't'> & { t: (msg: string, _?: any) => string };
 
 export default interface AppContext {
   jwt?: string;
@@ -16,7 +17,7 @@ export default interface AppContext {
   req: IRequest;
   res: Response;
   locale: 'en' | 'fr';
-  i18n: Omit<i18n, 't'> & { t: (msg: string, _?: any) => string };
+  i18n: Ii18n;
 }
 
 export interface IJwtPayload {

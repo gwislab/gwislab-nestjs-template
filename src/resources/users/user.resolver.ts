@@ -25,21 +25,27 @@ export class UserResolver {
 
   @UsePipes(new ValidateSignupArgs())
   @Mutation(() => User)
-  signupUser(@Args('signupUserInput') signupUserInput: SignUpUserInput) {
+  signupUser(
+    @Args('signupUserInput') signupUserInput: SignUpUserInput,
+    @Context() { i18n }: AppContext,
+  ) {
     this.logger.customLog();
-    return this.userService.signup(signupUserInput);
+    return this.userService.signup(signupUserInput, i18n);
   }
 
   @Mutation(() => User)
-  loginUser(@Args('loginUserInput') loginUserInput: LoginUserInput) {
-    return this.userService.login(loginUserInput);
+  loginUser(
+    @Args('loginUserInput') loginUserInput: LoginUserInput,
+    @Context() { i18n }: AppContext,
+  ) {
+    return this.userService.login(loginUserInput, i18n);
   }
 
   @UseGuards(AuthGuard)
   @Query(() => User)
-  me(@Context() { req }: AppContext) {
+  me(@Context() { req, i18n }: AppContext) {
     const { user } = req;
-    return this.userService.getMe(user.id);
+    return this.userService.getMe(user.id, i18n);
   }
 
   @ResolveField(() => String, { nullable: true })

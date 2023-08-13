@@ -9,6 +9,7 @@ import { Request } from 'express';
 import config from '../config/config';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AppErrors } from '../services/error.service';
+import i18n from 'i18next';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -24,7 +25,7 @@ export class AuthGuard implements CanActivate {
 
     if (!token) {
       throw this.error.handler(
-        'Missing authorization header',
+        i18n.t('missingAuthHeader'),
         HttpStatus.UNAUTHORIZED,
       );
     }
@@ -36,7 +37,7 @@ export class AuthGuard implements CanActivate {
 
       if (!payload) {
         throw this.error.handler(
-          'Invalid bearer token!',
+          i18n.t('userAlreadyExit'),
           HttpStatus.UNAUTHORIZED,
         );
       }
@@ -44,7 +45,7 @@ export class AuthGuard implements CanActivate {
       req.token = token;
     } catch {
       throw this.error.handler(
-        'Session Expired, Please login again!',
+        i18n.t('sessionExpired'),
         HttpStatus.UNAUTHORIZED,
       );
     }
