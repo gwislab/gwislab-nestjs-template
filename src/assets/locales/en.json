@@ -8,6 +8,12 @@
     "invalidEmail": "invalid email",
     "invalidToken": "invalid token",
     "missingAuthHeader": "missing authorization header",
-    "sessionExpired": "session expire, please login again!"
+    "sessionExpired": "session expire, please login again!",
+    "badRequest": "bad request",
+    "404": "404 error",
+    "forbidden": "forbidden",
+    "unauthorized": "unauthorized",
+    "tooManyRequest": "too many request",
+    "somethingWentWrong": "something went wrong, please contact use at issues@gwislab.com"
   }
 }

@@ -15,12 +15,14 @@ import { AuthGuard } from 'src/guards/auth.guard';
 import { UseGuards, UsePipes } from '@nestjs/common';
 import AppContext from 'src/interfaces/context.interface';
 import { ValidateSignupArgs } from '../../pipes/inputValidation.pipe';
+import { AppErrors } from 'src/services/error.service';
 
 @Resolver(() => User)
 export class UserResolver {
   constructor(
     private readonly userService: UserService,
     private readonly logger: AppLogger,
+    private readonly error: AppErrors,
   ) {}
 
   @UsePipes(new ValidateSignupArgs())
@@ -29,8 +31,11 @@ export class UserResolver {
     @Args('signupUserInput') signupUserInput: SignUpUserInput,
     @Context() { i18n }: AppContext,
   ) {
-    this.logger.customLog();
-    return this.userService.signup(signupUserInput, i18n);
+    try {
+      return this.userService.signup(signupUserInput, i18n);
+    } catch (error) {
+      throw this.error.handler(error);
+    }
   }
 
   @Mutation(() => User)
@@ -38,25 +43,41 @@ export class UserResolver {
     @Args('loginUserInput') loginUserInput: LoginUserInput,
     @Context() { i18n }: AppContext,
   ) {
-    return this.userService.login(loginUserInput, i18n);
+    try {
+      return this.userService.login(loginUserInput, i18n);
+    } catch (error) {
+      throw this.error.handler(error);
+    }
   }
 
   @UseGuards(AuthGuard)
   @Query(() => User)
   me(@Context() { req, i18n }: AppContext) {
-    const { user } = req;
-    return this.userService.getMe(user.id, i18n);
+    try {
+      const { user } = req;
+      return this.userService.getMe(user.id, i18n);
+    } catch (error) {
+      throw this.error.handler(error);
+    }
   }
 
   @ResolveField(() => String, { nullable: true })
   token(@Context() { req }: AppContext, @Parent() parent) {
-    const { token } = this.userService.getToken(req, parent);
-    return token;
+    try {
+      const { token } = this.userService.getToken(req, parent);
+      return token;
+    } catch (error) {
+      throw this.error.handler(error);
+    }
   }
 
   @ResolveField(() => String, { nullable: true })
   expiresIn(@Context() { req }: AppContext, @Parent() parent) {
-    const { expiresIn } = this.userService.getToken(req, parent);
-    return expiresIn;
+    try {
+      const { expiresIn } = this.userService.getToken(req, parent);
+      return expiresIn;
+    } catch (error) {
+      throw this.error.handler(error);
+    }
   }
 }

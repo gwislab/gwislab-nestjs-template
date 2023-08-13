@@ -9,7 +9,7 @@ import { Request } from 'express';
 import config from '../config/config';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AppErrors } from '../services/error.service';
-import i18n from 'i18next';
+import * as i18n from 'i18next';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

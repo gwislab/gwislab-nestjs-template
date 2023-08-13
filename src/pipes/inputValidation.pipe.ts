@@ -1,7 +1,7 @@
 import { PipeTransform, Injectable, HttpStatus } from '@nestjs/common';
 import { SignUpUserInput } from '../resources/users/dto/user-auth.input';
 import { AppErrors } from '../services/error.service';
-import i18n from 'i18next';
+import * as i18n from 'i18next';
 
 @Injectable()
 export class ValidateSignupArgs implements PipeTransform {

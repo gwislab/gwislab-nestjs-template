@@ -4,10 +4,14 @@ import { User } from '@prisma/client';
 import prisma from '../prisma';
 import { FilterUserArgs } from '../interfaces';
 import { CreateUserArgs } from 'src/interfaces/create-args.interface';
+import { AppErrors } from 'src/services/error.service';
 
 @Injectable()
 export class UserRepository {
-  constructor(private readonly logger: AppLogger) {
+  constructor(
+    private readonly logger: AppLogger,
+    private readonly error: AppErrors,
+  ) {
     this.logger.setContext(UserRepository.name);
   }
 
@@ -15,7 +19,7 @@ export class UserRepository {
     try {
       return await prisma.user.create({ data });
     } catch (error) {
-      throw error;
+      throw this.error.handler(error);
     }
   };
 
@@ -23,7 +27,7 @@ export class UserRepository {
     try {
       return await prisma.user.findFirst({ where });
     } catch (error) {
-      throw error;
+      throw this.error.handler(error);
     }
   };
 }
